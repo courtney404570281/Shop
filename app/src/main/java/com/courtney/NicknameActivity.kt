@@ -14,10 +14,7 @@ class NicknameActivity : AppCompatActivity() {
 
         btn_finish.setOnClickListener {
             val nickname = edt_nickname.text.toString()
-            getSharedPreferences("shop", Context.MODE_PRIVATE)
-                .edit()
-                .putString("NICKNAME", nickname)
-                .apply()
+            setNickname(nickname)
             setResult(Activity.RESULT_OK)
             finish()
         }

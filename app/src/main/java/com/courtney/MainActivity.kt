@@ -8,6 +8,9 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -16,6 +19,8 @@ import com.google.firebase.database.ValueEventListener
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import org.jetbrains.anko.sdk27.coroutines.onItemClick
+import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +48,20 @@ class MainActivity : AppCompatActivity() {
 
         auth.addAuthStateListener { auth ->
             authChanged(auth)
+        }
+
+        // Spinner
+        val colors = arrayOf("Red", "Blue", "Green")
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, colors)
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                Log.d(TAG, "onItemSelected: ${colors[position]}")
+            }
         }
     }
 

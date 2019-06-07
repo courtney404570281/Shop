@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private val RC_NICKNAME: Int = 101
     private val RC_SIGNUP: Int = 100
+    var cacheService: Intent? = null
     val TAG = MainActivity::class.java.simpleName
     val auth = FirebaseAuth.getInstance()
     val signup = false
@@ -167,7 +168,19 @@ class MainActivity : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
+            R.id.action_cache -> {
+                cacheService = Intent(this, CacheService::class.java)
+                startService(cacheService)
+                startService(Intent(this, CacheService::class.java))
+                startService(Intent(this, CacheService::class.java))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopService(cacheService)
     }
 }

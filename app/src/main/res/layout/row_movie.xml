@@ -7,11 +7,11 @@
     <TextView
             android:text="Title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="28dp"
+            android:layout_height="wrap_content"
             android:id="@+id/txt_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_constraintStart_toEndOf="@+id/img_movie" android:layout_marginStart="16dp"/>
+            app:layout_constraintStart_toEndOf="@+id/img_movie" android:layout_marginStart="16dp"
+            app:layout_constraintTop_toTopOf="@+id/img_movie"/>
     <TextView
             android:text="9.0"
             android:layout_width="wrap_content"

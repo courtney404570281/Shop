@@ -18,13 +18,18 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.row_function.*
 import kotlinx.android.synthetic.main.row_function.view.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.sdk27.coroutines.onItemClick
 import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -169,10 +174,16 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             R.id.action_cache -> {
-                cacheService = Intent(this, CacheService::class.java)
-                startService(cacheService)
-                startService(Intent(this, CacheService::class.java))
-                startService(Intent(this, CacheService::class.java))
+                doAsync {
+                    val json = URL("https://api.myjson.com/bins/wk2gd").readText()
+                    val movies = Gson().fromJson<List<Movie>>(json,
+                        object : TypeToken<List<Movie>>(){}.type)
+                    val movie = movies[0]
+                    startService(intentFor<CacheService>(
+                        "TITLE" to movie.Title,
+                        "URL" to movie.Poster
+                    ))
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

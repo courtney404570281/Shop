@@ -1,9 +1,9 @@
 package com.courtney
 
 import android.app.IntentService
-import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.bumptech.glide.Glide
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
@@ -11,7 +11,11 @@ class CacheService : IntentService("CacheService"), AnkoLogger {
 
     override fun onHandleIntent(intent: Intent?) {
         info { "onHandleIntent" }
-        Thread.sleep(5000)
+        val title = intent?.getStringExtra("TITLE")
+        var url = intent?.getStringExtra("URL")
+        info{ "Downloading... $title $url" }
+        Glide.with(this)
+            .download(url)
     }
 
     /*override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

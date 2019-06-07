@@ -9,6 +9,10 @@ import org.jetbrains.anko.info
 
 class CacheService : IntentService("CacheService"), AnkoLogger {
 
+    companion object {
+        val ACTION_CACHE_DONE = "action_cache_done"
+    }
+
     override fun onHandleIntent(intent: Intent?) {
         info { "onHandleIntent" }
         val title = intent?.getStringExtra("TITLE")

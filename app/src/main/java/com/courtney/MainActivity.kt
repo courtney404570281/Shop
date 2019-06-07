@@ -1,7 +1,10 @@
 package com.courtney
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -25,13 +28,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.row_function.*
 import kotlinx.android.synthetic.main.row_function.view.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onItemClick
 import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
 import java.net.URL
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AnkoLogger {
 
 
     private val RC_NICKNAME: Int = 101
@@ -167,6 +169,14 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if(intent?.action.equals(CacheService.ACTION_CACHE_DONE)) {
+                info("MainActivity cache informed")
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -178,11 +188,12 @@ class MainActivity : AppCompatActivity() {
                     val json = URL("https://api.myjson.com/bins/wk2gd").readText()
                     val movies = Gson().fromJson<List<Movie>>(json,
                         object : TypeToken<List<Movie>>(){}.type)
-                    val movie = movies[0]
-                    startService(intentFor<CacheService>(
-                        "TITLE" to movie.Title,
-                        "URL" to movie.Poster
-                    ))
+                    movies.forEach {
+                        startService(intentFor<CacheService>(
+                            "TITLE" to it.Title,
+                            "URL" to it.Poster
+                        ))
+                    }
                 }
                 true
             }
@@ -190,8 +201,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(CacheService.ACTION_CACHE_DONE)
+        registerReceiver(broadcastReceiver, filter)
+    }
+
+     override fun onStop() {
         super.onStop()
-        stopService(cacheService)
+//        stopService(cacheService)
+         unregisterReceiver(broadcastReceiver)
     }
 }

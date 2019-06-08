@@ -11,3 +11,5 @@
 /build
 /captures
 .externalNativeBuild
+.AndroidManifest.xml
+.google_maps_api.xml
